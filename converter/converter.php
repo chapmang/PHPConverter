@@ -4,7 +4,7 @@ namespace PHPConverter\Converter {
 	/**
 	* 
 	*/
-	class Converter extends Base {
+	class Converter {
 		
 		/**
 		 * @readwrite
@@ -17,25 +17,22 @@ namespace PHPConverter\Converter {
 		protected $_fromUnit;
 
 		public function convert ($value, $fromUnit){
-			$this->value = $value;
-			$this->fromUnit = $fromUnit;
+			$this->_value = $value;
+			$this->_fromUnit = $fromUnit;
 			
 			return $this;
 		}
 
 		public function toUnit($toUnit) {
 			
-			if (method_exists($this, $toUnit)) {
-				return call_user_func_array(array($this, $toUnit), array());
-			} else {
-				throw new \Exception("Not a valid unit", 1);
-				
-			}
+		
+				return call_user_func(array($this, $toUnit), array());
+			
 		}
 
-		public function __toString() {
-			# code...
-		}
+		// public function __toString() {
+		// 	# code...
+		// }
 
 	}
 }

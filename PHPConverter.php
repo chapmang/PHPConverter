@@ -1,14 +1,24 @@
 <?php
 namespace PHPConverter {
-	require_once 'core/base.php';
-	require_once 'core/inspector.php';
-	require_once 'converter\length.php';
+
+	// Core Files
+	include 'core/arraymethods.php';
+	include 'core/configuration.php';
+
+	// Converters
+	include 'converter/converter.php';
+	include 'converter/area.php';
+	include 'converter/coordinates.php';
+	include 'converter/length.php';
+	include 'converter/mass.php';
+	include 'converter/volume.php';
+
 
 	error_reporting(-1);
 	/**
 	* 
 	*/
-	class PHPConverter extends Core\Base {
+	class PHPConverter  {
 		
 		/**
 		 * @readwrite
@@ -17,7 +27,7 @@ namespace PHPConverter {
 
 
 		public static function convert($type, $value, $fromUnit) {
-			
+		
 			static::$_resultValues = static::converter($type)->convert($value, $fromUnit);
 			return static::$_resultValues;
 		}
