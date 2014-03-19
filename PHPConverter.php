@@ -16,22 +16,38 @@ namespace PHPConverter {
 
 	error_reporting(-1);
 	/**
-	* 
+	* PHPConverter
+	* Factory class of library to allow for conversion
+	* between unit of measure
+	* @author Geoff Chapman <geoff.chapman@mac.com>
+	* @version 1.0
+	* @package PHPConverter
 	*/
 	class PHPConverter  {
 		
 		/**
-		 * @readwrite
+		 * Results of conversion
+		 * @var array
 		 */
 		protected static $_resultValues = array();
 
-
+		/**
+		 * Instatiate a conversion
+		 * @param string $type Conversion type
+		 * @param mixed $value The value(s) to be converted
+		 * @param string $fromUnit The unit to be converted from
+		 */
 		public static function convert($type, $value, $fromUnit) {
 		
 			static::$_resultValues = static::converter($type)->convert($value, $fromUnit);
 			return static::$_resultValues;
 		}
 
+		/**
+		 * Detect call to specific converter type
+		 * @param string $type Convertion type to be used
+		 * @return object
+		 */
 		protected static function converter($type) {
 			
 			switch ($type) {
