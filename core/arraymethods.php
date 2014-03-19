@@ -62,53 +62,6 @@ namespace PHPConverter\Core {
             return $array[$keys[count($keys) - 1]];
         }
 
-		/**
-		 * Convert an associative array to an object
-		 * @param  Array $array Associative array for converting
-		 * @return Object       Converted Object
-		 */
-		public static function toObject($array) {
-			$result = new \stdClass();
-			foreach ($array as $key => $value) {
-				if (is_array($value)) {
-					$result->{$key} = self::toObject($value);
-				} else {
-					$result->{$key} = $value;
-				}
-			}
-			return $result;
-		}
-
-		/**
-		 * Convert a multidimensional array into
-		 * a unidimensional array
-		 * @param  Array $array Array to be flatten
-		 * @param  Array $value Optional array to append to 
-		 * @return Array        Unidimentional array to return
-		 */
-		public function flatten ($array, $return = array()) {
-			foreach ($array as $key => $value) {
-				if (is_array($value) || is_object($value)) {
-					$return = self::flatten($value, $return);
-				} else {
-					$return[] = $value;
-				}
-			}
-		}
-
-		/**
-		 * Convert an array to a HTTP query string
-		 * @param  array $array Paramaters to  converted
-		 * @return string        HTTP query string
-		 */
-		public function toQueryString($array) {
-            return http_build_query(
-                self::clean(
-                    $array
-                )
-            );
-        }
-
         /**
 		 * Get an item from an array using "dot" notation.
 		 * @param  array   $array
