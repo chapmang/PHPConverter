@@ -4,6 +4,7 @@ namespace PHPConverter {
 	// Core Files
 	include 'core/arraymethods.php';
 	include 'core/configuration.php';
+	include 'core/stringmethods.php';
 
 	// Converters
 	include 'converter/converter.php';
