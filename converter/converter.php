@@ -83,7 +83,10 @@ namespace PHPConverter\Converter {
 			return $this;
 		}
 
-		
+		public function addAlias($name, $alias) {
+			$this->_aliases[$name][] = $alias;
+		}
+
 		public function __toString() {
 			# code...
 		}
