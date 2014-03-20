@@ -12,18 +12,7 @@ namespace PHPConverter\Converter {
 	 */
 	class Length extends Converter {
 		
-		/**
-		 * Units within this measurement
-		 * @var array
-		 */
-		protected $_units = array();
-
-		/**
-		 * Aliases used to refer to units within this measurement
-		 * @var array 
-		 */ 
-		protected $_aliases = array();
-
+		
 		/**
 		 * Retrieve the preregistered units and aliases for this measurement
 		 * @return void
