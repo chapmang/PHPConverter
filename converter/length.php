@@ -37,34 +37,6 @@ namespace PHPConverter\Converter {
 		}
 
 		/**
-		 * Retrieve the required conversion factor for the required unit
-		 * @param string $unit The unit to be retrieved
-		 * @return float 	   The conversion factor for the given unit
-		 * @throws \Exception  The required unit is not registered
-		 */
-		protected function fetchUnit($unit) {
-
-			foreach ($this->_units as $key => $value) {
-				if ($unit === $key || $this->isAlias($unit, $key)) {
-					return $value;
-				}
-			}
-
-			throw new \Exception("{$unit} is not a supported unit", 1);
-		}
-
-		/**
-		 * Check if the required unit is an alias of a registered unit
-		 * @param string $unit The required unit to be tested
-		 * @param string $key  The array of the registered unit to be tested
-		 * @return boolean
-		 */
-		protected function isAlias($unit, $key) {
-
-			return in_array($unit, $this->_aliases[$key]);
-		}
-
-		/**
 		 * Magic method allowing any unit names to be used to call conversion
 		 * @param string $toUnit The desired unit of measure
 		 * @return float 		 Converted measurement from callback

@@ -61,8 +61,43 @@ namespace PHPConverter\Converter {
 			return call_user_func(array($this, $toUnit), array());	
 		}
 
+		/**
+		 * Retrieve the required conversion factor for the required unit
+		 * @param string $unit The unit to be retrieved
+		 * @return float 	   The conversion factor for the given unit
+		 * @throws \Exception  The required unit is not registered
+		 */
+		protected function fetchUnit($unit) {
 
+			foreach ($this->_units as $key => $value) {
+				if ($unit === $key || $this->isAlias($unit, $key)) {
+					return $value;
+				}
+			}
 
+			throw new \Exception("{$unit} is not a supported unit", 1);
+		}
+
+		/**
+		 * Check if the required unit is an alias of a registered unit
+		 * @param string $unit The required unit to be tested
+		 * @param string $key  The array of the registered unit to be tested
+		 * @return boolean
+		 */
+		protected function isAlias($unit, $key) {
+
+			return in_array($unit, $this->_aliases[$key]);
+		}
+
+		/**
+		 * Add units to measurement type at runtime
+		 * @param string    $name    Identifier of unit to be added
+		 * @param int|float $value   The conversion factor of the unit being added
+		 * @param array     $aliases Optional aliases for the new unit
+		 * @throws \Exception        Unit name not suitable
+		 * @throws \Exception        Unit not a valid number
+		 * @return object
+		 */
 		public function addUnit($name, $value, $aliases = array()) {
 
 			if (!StringMethods::match($name, "#^([a-zA-Z]+)$#")) {
@@ -77,15 +112,27 @@ namespace PHPConverter\Converter {
 
 			if (!empty($aliases)) {
 				foreach ($aliases as $key => $value) {
-					$this->_aliases[$name][] = $value;
+					$this->addAlias($name, $value);
 				}
 			}
 			return $this;
 		}
 
+		/**
+		 * Add an alias to a registered unit at runtime
+		 * @param string $name Identifier of unit to be aliased
+		 * @param string $alias Alias to be applied
+		 */
 		public function addAlias($name, $alias) {
-			$this->_aliases[$name][] = $alias;
+
+			if (array_key_exists($name, $this->_units)) {
+				$this->_aliases[$name][] = $alias;
+			} else {
+				throw new \Exception("{$name} is not a registered unit", 1);
+			}
 		}
+
+
 
 		public function __toString() {
 			# code...
