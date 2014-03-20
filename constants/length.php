@@ -7,7 +7,7 @@
 |
 | Conversion factors between units of length and the native unit of
 | meters. New units of length can be add by appending them to this 
-| array or by calling the 'newUnit' method to add them 
+| array or by calling the 'addUnit' method to add them 
 | temporarily at run time
 |
 */
