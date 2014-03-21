@@ -12,7 +12,6 @@ namespace PHPConverter\Converter {
 	 */
 	class Length extends Converter {
 		
-		
 		/**
 		 * Retrieve the preregistered units and aliases for this measurement
 		 * @return void
@@ -37,7 +36,7 @@ namespace PHPConverter\Converter {
 		}
 
 		/**
-		 * Magic method allowing any unit names to be used to call conversion
+		 * Magic method allowing all unit names to be used to call the conversion
 		 * @param string $toUnit The desired unit of measure
 		 * @return float 		 Converted measurement from callback
 		 */

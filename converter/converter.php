@@ -108,8 +108,10 @@ namespace PHPConverter\Converter {
 				throw new \Exception("{$name}'s value must be either an integer or a float value", 1);
 			}
 			
+			// Add new unit
 			$this->_units[$name] = $value; 
 
+			// Process any aliases
 			if (!empty($aliases)) {
 				foreach ($aliases as $key => $value) {
 					$this->addAlias($name, $value);
