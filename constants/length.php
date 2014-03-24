@@ -38,8 +38,8 @@ return array(
 		// Imperial units
 		"th"	=> 0.0000254,
 		"in" 	=> 0.0254,
-		"ft" 	=> 0.3048,
-		"rd"	=> 0.30480061,
+		"ft" 	=> 0.30480061,
+		"rd"	=> 5.0292,
 		"yds" 	=> 0.9144,
 		"ch"	=> 20.1168,
 		"fur"	=> 201.168,
@@ -80,7 +80,8 @@ return array(
 			"micrometre",
 			"micrometers",
 			"micrometres",
-			"micron"
+			"micron",
+			"microns"
 		),
 		"mm" => array(
 			"millimeter",
