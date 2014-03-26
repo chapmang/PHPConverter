@@ -3,15 +3,10 @@
  * 
  * EllipsoidConvert
  * 
- * A class for converting between Airy 1830 and WGS84(GRS80) ellipsoids.
- * Includes:
- * Options to interpolate between Airy 1830 and WGS84(GRS80) ellipsoids
- * Ability to handle various formats for both grid references and Latitude and Longitude 
+ * A class for converting between ellipsoids.
  * 
- * @author		Geoff Chapman
- * @copyright	Copyright © 2012 Geoff Chapman
- * @since		Version 1.0
- * @link		http://aa-ap032/aamedia/user_guide/libraries/coorConversion.html
+ * @author Geoff Chapman <geoff.chapman@mac.com>
+ * @version 2.0
  *
  */
 		
@@ -35,6 +30,12 @@ class EllipsoidConvert {
 	// Destination Helmert transform parameters
 	protected $toHelmert = array();
 
+	/**
+	 * @todo Is the transformation to / from WGS84 if not loop using WGS84 as mid point
+	 * @todo fetch parameters from config file (build config file)
+	 * @todo validate lat, lon and datum name
+	 * @todo work out what the hell i'm doing with the datum in the objectS
+	 */
 	public function __construct($lat, $lon, $datum, $height = 0) {
 		$this->lat = $lat;
 		$this->lon = $lon;
@@ -46,44 +47,11 @@ class EllipsoidConvert {
 		};
 	}
 
-	}
-	/**
-	 * OSGB36toWGS84
-	 * 
-	 * Convert a given Lat Lon pair from OSGB36 to WGS84 coordinate reference system
-	 * 
-	 * @access	public
-	 * @param	object	A LatLon pair in decimal degrees
-	 * @return	object	LatLon as decimal degrees
-	 *  
-	 */
-	public function OSGB36toWGS84($p1) {
-	  	$p2 = $this->convert($p1, self::$e["Airy1830"], self::$h["OSGB36toWGS84"], self::$e["WGS84"]);
-	  	return $p2;
-		}
-	
-	/**
-	 * WGS84toOSGB36
-	 * 
-	 * Convert a given Lat Lon pair from WGS84 to OSGB36 coordinate reference system
-	 * 
-	 * @access	public
-	 * @param	object	A LatLon pair in decimal degrees
-	 * @return	object	LatLon as decimal degrees
-	 * 
-	 */	
-	//Convert WGS84 to OSGB36
-	public function WGS84toOSGB36($p1)
-		{
-	  	$p2 = $this->convert($p1, self::$e["WGS84"], self::$h["WGS84toOSGB36"], self::$e["Airy1830"]);
-	  	return $p2;
-		}
-	
-	//3D Conversion of Ellipsoid 1 to Ellipsoid 2
+
 	/**
 	 * convert
 	 * 
-	 * 3D convertion a set of coordinates from ellipsoid to another
+	 * 3D conversion a set of coordinates from ellipsoid to another
 	 * 
 	 * @access	private
 	 * @param	object		A LatLon pair in decimal degrees
@@ -95,137 +63,120 @@ class EllipsoidConvert {
 	 */
 	private function convert($toDatum) {
 
+		$this->toDatum = $toDatum;
+
 		list($x, $y, $z) = $this->toCartesian();
+		list($x1, $y1, $z1) = $this->helmertTransform($x, $y, $z);
+		list($x2, $y2, $z2) = $this->toPolar($x1, $y1, $z1);
 
+		$this->lat = $x2;
+		$this->lon = $y2;
+		$this->height = $z2;
 
+		return $this;
 
-	  	//Convert polar to cartesian coordinates (using ellipse 1)
-	  	$p1["lat"] = deg2rad($p->lat);
-	  	$p1["lon"] = deg2rad($p->lon);
-	  	$p1["height"] = $p->height; 
+	}
+
+	/**
+	 * Converting latitude, longitude and ellipsoid height to
+	 * 3-D Cartesian coordinates.
+	 * @return array
+	 */
+	private function toCartesian() {
+
+		// Convert from degrees to radians
+	  	$radLat = deg2rad($this->lat);
+	  	$radLon = deg2rad($this->lon);
+	  	$height = $this->height; 
 	
-	  	$a = $e1["a"];
-	  	$b = $e1["b"];
-	
-	  	$sinPhi = sin($p1["lat"]);
-	  	$cosPhi = cos($p1["lat"]);
-	  	$sinLambda = sin($p1["lon"]);
-	  	$cosLambda = cos($p1["lon"]);
-	  	$H = $p1["height"];
-	
-	  	$eSq = ($a*$a - $b*$b) / ($a*$a);
-	  	$nu = $a / sqrt(1 - $eSq*$sinPhi*$sinPhi);
-	
-	  	$x1 = ($nu+$H) * $cosPhi * $cosLambda;
-	  	$y1 = ($nu+$H) * $cosPhi * $sinLambda;
-	  	$z1 = ((1-$eSq)*$nu + $H) * $sinPhi;
-	
-	
-	  	//Apply helmert transform using appropriate params
-	  
-		$tx = $t["tx"];
-		$ty = $t["ty"];
-		$tz = $t["tz"];
-		$rx = deg2rad($t["rx"]/3600);  // normalise seconds to radians
-		$ry = deg2rad($t["ry"]/3600);
-		$rz = deg2rad($t["rz"]/3600);
-		$s1 = $t["s"]/1e6 + 1;              // normalise ppm to (s+1)
+	  	$semiMajor = $this->fromDatum->ellipsoid["a"]; // semi-major axis length of ellipsoid
+	  	$semiMinor = $this->fromDatum->ellipsoid["b"]; // semi-minor axis length of ellipsoid
 		
-		// apply transform
-		$x2 = $tx + $x1*$s1 - $y1*$rz + $z1*$ry;
-		$y2 = $ty + $x1*$rz + $y1*$s1 - $z1*$rx;
-		$z2 = $tz - $x1*$ry + $y1*$rx + $z1*$s1;
+	  	$sinLat = sin($radLat);
+	  	$cosLat = cos($radLat);
+	  	$sinLon = sin($radLon);
+	  	$cosLon = cos($radLon);
 	
+		$eSq = (pow($semiMajor,2) - pow($semiMinor,2)) / pow($semiMajor,2); // eccentricity squared of ellipsoid
+	  	$v = $semiMajor / sqrt(1 - $eSq * pow($sinLat,2)); // prime vertical radius of curvature @ $this->lat
 	
-	  	//Convert cartesian to polar coordinates (using ellipse 2)
-	
-	  	$a = $e2["a"];
-	  	$b = $e2["b"];
-	  	$precision = 4/$a;  // results accurate to around 4 metres
-	
-	  	$eSq = ($a*$a -$b*$b) / ($a*$a);
-	 	$p = sqrt($x2*$x2 + $y2*$y2);
-		$phi = atan2($z2, $p*(1-$eSq));
-		$phiP = 2*pi();
-	  	while (abs($phi-$phiP) > $precision)
-	  		{
-	    	$nu = $a/sqrt(1-$eSq*sin($phi)*sin($phi));
+	  	$x = ($v+$height) * $cosLat * $cosLon;
+	  	$y = ($v+$height) * $cosLat * $sinLon;
+	  	$z = ((1-$eSq)*$v + $height) * $sinLat;
+
+	  	return array($x, $y, $z);
+	}
+
+	/**
+	 * Transform 3-D Cartesian coordinates from one ellipsoidal datum to
+	 * a second using the Helmert Transformation
+	 * @param float $x 
+	 * @param float $y
+	 * @param float $z
+	 * @return array
+	 */
+	private function helmertTransform($x, $y, $z) {
+		
+  		// Retrieve the translation vectors between the
+  		// fromDatum and the toDatum
+		$tx = $t["tx"]; // X-axis translation (metres)
+		$ty = $t["ty"]; // Y-axis translation (metres)
+		$tz = $t["tz"]; // Z-axis translation (metres)
+
+		// Retrieve the rotations to be applied to the points vector
+		// and normalise seconds to radians
+		$rx = deg2rad($t["rx"]/3600); // X-axis rotation (radians)
+		$ry = deg2rad($t["ry"]/3600); // Y-axis rotation (radians)
+		$rz = deg2rad($t["rz"]/3600); // Z-axis rotation (radians)
+
+		// Retrieve the scale correction while normalising from ppm
+		$s = $t["s"]/1e6; // Scale factor (unit less)
+		
+		// Apply Helmert 7-parameter transform
+		$x1 = $tx + $x*(1+$s) - $y*$rz + $z*$ry;
+		$y1 = $ty + $x*$rz + $y*(1+$s) - $z*$rx;
+		$z1 = $tz - $x*$ry + $y*$rx + $z*(1+$s);
+
+		return array($x1, $y1, $z1);
+
+	}
+
+	/**
+	 * Converting 3-D Cartesian coordinates to latitude, longitude
+	 * and ellipsoid hight
+	 * @param float $x1 
+	 * @param float $y1
+	 * @param float $z1 
+	 * @return array
+	 */
+	private function toPolar($x1, $y1, $z1) {
+
+	  	$semiMajor = $this->toDatum->ellipsoid["a"]; // semi-major axis length of fromDatum
+	  	$semiMinor = $this->toDatum->ellipsoid["b"]; // semi-minor axis length of ellipsoid
+	  	$precision = 4/$semiMajor;  // results accurate to around 4 metres
+		
+		// Initial value of latitude
+		$eSq = (pow($semiMajor,2) - pow($semiMinor,2)) / pow($semiMajor,2); // eccentricity squared of ellipsoid
+	 	$p = sqrt(pow($x2,2) + pow($y2,2));
+		$phi = atan2($z2, $p * (1-$eSq)); // Initial value of latitude (before precision improvement)
+		$phiP = 2 * pi();
+
+		// Iteratively improve latitude by computing v until change between
+		// successive values of $phi is smaller than $precision
+	  	while (abs($phi-$phiP) > $precision) {
+	    	$v = $semiMajor / sqrt(1 - $eSq * pow(sin($phi),2)); // prime vertical radius of curvature @ $phi
 	    	$phiP = $phi;
-	    	$phi = atan2($z2 + $eSq*$nu*sin($phi), $p);
-	  		}
-	  	$lambda = atan2($y2, $x2);
-	  	$H = $p/cos($phi) - $nu;
-	
-	  	return new LatLon(rad2deg($phi),rad2deg($lambda), $H);
-		}
+	    	$phi = atan2($z2 + $eSq * $v * sin($phi), $p);
+	  	}
 
-		/**
-		 * Converting latitude, longitude and ellipsoid height to
-		 * 3-D Cartesian coordinates.
-		 * @return array
-		 */
-		private function toCartesian() {
+	  	// Longitude
+	  	$lambda = atan2($y1, $x1);
 
-			// Convert from degrees to radians
-		  	$radLat = deg2rad($this->lat);
-		  	$radLon = deg2rad($this->lon);
-		  	$height = $this->height; 
-		
-		  	$a = $this->datum["a"]; // semi-major axis length of fromDatum
-		  	$b = $this->datum["b"]; // eccentricity squared of fromDatum
-			
-		  	$sinLat = sin($radLat);
-		  	$cosLat = cos($radLat);
-		  	$sinLon = sin($radLon);
-		  	$cosLon = cos($radLon);
-		  	$H = $height;
-		
-		  	$eSq = (pow($a,2) - pow($b,2) / pow($a,2);
-		  	$v = $a / sqrt(1 - $eSq*pow($sinLat,2);
-		
-		  	$x = ($v+$H) * $cosLat * $cosLon;
-		  	$y = ($v+$H) * $cosLat * $sinLon;
-		  	$z = ((1-$eSq)*$v + $H) * $sinLat;
+	  	// Convert from radians to degrees
+	  	$x2 = rad2deg($phi);
+	  	$y2 = rad2deg($lambda);
+	  	$z2 = $p/cos($phi) - $v;
 
-		  	return array($x, $y, $z);
-		}
-
-		private function helmertTransform() {
-			//Apply helmert transform using appropriate params
-	  
-			$tx = $t["tx"];
-			$ty = $t["ty"];
-			$tz = $t["tz"];
-			$rx = deg2rad($t["rx"]/3600);  // normalise seconds to radians
-			$ry = deg2rad($t["ry"]/3600);
-			$rz = deg2rad($t["rz"]/3600);
-			$s1 = $t["s"]/1e6 + 1;              // normalise ppm to (s+1)
-			
-			// apply transform
-			$x2 = $tx + $x1*$s1 - $y1*$rz + $z1*$ry;
-			$y2 = $ty + $x1*$rz + $y1*$s1 - $z1*$rx;
-			$z2 = $tz - $x1*$ry + $y1*$rx + $z1*$s1;
-	
-		}
-
-		private function cartesianToPolar() {
-			//Convert cartesian to polar coordinates (using ellipse 2)
-	
-	  	$a = $e2["a"];
-	  	$b = $e2["b"];
-	  	$precision = 4/$a;  // results accurate to around 4 metres
-	
-	  	$eSq = ($a*$a -$b*$b) / ($a*$a);
-	 	$p = sqrt($x2*$x2 + $y2*$y2);
-		$phi = atan2($z2, $p*(1-$eSq));
-		$phiP = 2*pi();
-	  	while (abs($phi-$phiP) > $precision)
-	  		{
-	    	$nu = $a/sqrt(1-$eSq*sin($phi)*sin($phi));
-	    	$phiP = $phi;
-	    	$phi = atan2($z2 + $eSq*$nu*sin($phi), $p);
-	  		}
-	  	$lambda = atan2($y2, $x2);
-	  	$H = $p/cos($phi) - $nu;
-		}
-	};
+	  	return array($x2, $y2, $z2);
+	}
+};
