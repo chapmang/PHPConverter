@@ -9,7 +9,6 @@ namespace PHPConverter {
 	// Converters
 	include 'converter/converter.php';
 	include 'converter/area.php';
-	include 'converter/coordinates.php';
 	include 'converter/length.php';
 	include 'converter/mass.php';
 	include 'converter/volume.php';
@@ -54,9 +53,6 @@ namespace PHPConverter {
 			switch ($type) {
 				case 'area':
 					return new Converter\Area;
-					break;
-				case 'coordinates':
-					return new Converter\Coordinates;
 					break;
 				case 'length':
 					return new Converter\Length;
