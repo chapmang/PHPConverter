@@ -21,5 +21,5 @@ To add a new unit of measurement at runtime (Aliases optional)
 
 To add a new alias to a unit in the measurement type at runtime
 	
-	// $example->addAlias($name, $alias);
+	// $example->addAlias(name, alias);
 	$example->addAlias("smoot", "oliver");
