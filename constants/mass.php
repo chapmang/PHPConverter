@@ -7,7 +7,7 @@
 |
 | Conversion factors between units of mass and the native unit of
 | kilograms. New units of mass can be add by appending them to this 
-| array or by calling the 'newUnit' method to add them 
+| array or by calling the 'addUnit' method to add them 
 | temporarily at run time
 |
 */

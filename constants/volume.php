@@ -6,8 +6,8 @@
 |--------------------------------------------------------------------------
 |
 | Conversion factors between units of volume and the native unit of
-| cubic meter. New units of volume can be add by appending them to this 
-| array or by calling the 'newUnit' method to add them 
+| cubic meters. New units of volume can be add by appending them to this 
+| array or by calling the 'addUnit' method to add them 
 | temporarily at run time
 |
 */

@@ -6,8 +6,8 @@
 |--------------------------------------------------------------------------
 |
 | Conversion factors between units of area and the native unit of
-| meters. New units of area can be add by appending them to this 
-| array or by calling the 'newUnit' method to add them 
+| squared meters. New units of area can be add by appending them to this 
+| array or by calling the 'addUnit' method to add them 
 | temporarily at run time
 |
 */
