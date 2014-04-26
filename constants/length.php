@@ -210,6 +210,9 @@ return array(
 			"fathom",
 			"fathoms"
 		),
+		"cable" => array(
+			"cables"
+		),
 		"nmi" => array(
 			"nautical mile",
 			"nautical miles"
