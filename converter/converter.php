@@ -134,11 +134,5 @@ namespace PHPConverter\Converter {
 			}
 		}
 
-
-
-		public function __toString() {
-			# code...
-		}
-
 	}
 }
