@@ -17,7 +17,6 @@ To add a new unit of measurement at runtime (Aliases optional)
 	
 	// $example->addUnit(name, constant to SI unit, aliases = array());
 	$example->addUnit("smoot", 1.70180, array("oliver"));
-
 	echo $example->toUnit('meters');
 
 To add a new alias to a unit in the measurement type at runtime
