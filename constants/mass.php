@@ -54,96 +54,128 @@ return array(
 
 	"aliases" => array(
 		"fg" => array(
-			"femtogram"
+			"femtogram",
+			"femtograms"
 		),
 		"pg" => array(
-			"picogram"
+			"picogram",
+			"picograms"
 		),
 		"ng" => array(
-			"nanogram"
+			"nanogram",
+			"nanograms"
 		),
 		"μg" => array(
 			"mcg",
-			"microgram"
+			"microgram",
+			"micrograms"
 		),
 		"mg" => array(
-			"milligram"
+			"milligram",
+			"milligrams"
 		),
 		"cg" => array(
-			"centigram"
+			"centigram",
+			"centigrams"
 		),
 		"dg" => array(
-			"decigram"
+			"decigram",
+			"decigrams"
 		),
 		"g" => array(
-			"gram"
+			"gram",
+			"grams"
 		),
 		"dag" => array(
-			"decagram"
+			"decagram",
+			"decagrams"
 		),
 		"hg" => array(
-			"hectogram"
+			"hectogram",
+			"hectograms"
 		),
 		"kg" => array(
 			"kilogram",
-			"kilo"
+			"kilograms",
+			"kilo",
+			"kilos",
 		),
 		"Mg" => array(
 			"megagram",
+			"megagrams",
 			"t",
-			"tonne"
+			"tonne",
+			"tonnes",
 		),
 		"Gg" => array(
-			"gigagram"
+			"gigagram",
+			"gigagrams"
 		),
 		"Tg" => array(
-			"teragram"
+			"teragram",
+			"teragrams"
 		),
 		"Pg" => array(
-			"petagram"
+			"petagram",
+			"petagrams"
 		),
 		"gr" => array(
-			"grain"
+			"grain",
+			"grains"
 		),
 		"dr" => array(
-			"drachm"
+			"drachm",
+			"drachms"
 		),
 		"oz" => array(
-			"ounce"
+			"ounce",
+			"ounces"
 		),
 		"lb" => array(
-			"pound"
+			"pound",
+			"pounds"
 		),
 		"st" => array(
-			"stone"
+			"stone",
+			"stones"
 		),
 		"qtr" => array(
-			"quater"
+			"quater",
+			"quaters"
 		),
 		"cwt" => array(
-			"hundredweight"
+			"hundredweight",
+			"hundredweights"
 		),
 		"ton" => array(
+			"tons"
 		),
 		"pwt" => array(
-			"pennyweight"
+			"pennyweight",
+			"pennyweights"
 		),
 		"ozt" => array(
-			"troy ounce"
+			"troy ounce",
+			"troy ounces"
 		),
 		"lbt" => array(
-			"troy pound"
+			"troy pound",
+			"troy pounds"
 		),
 		"u" => array(
 			"atomic mass unit",
 			"dalton",
+			"daltons",
 			"Da"
 		),
 		"eV" => array(
 			"electronvolt",
-			"electron volt"
+			"electron volt",
+			"electronvolts",
+			"electron volts"
 		),
 		"sl" => array(
+			"slug",
 			"slug"
 		),
 		"mp" => array(
